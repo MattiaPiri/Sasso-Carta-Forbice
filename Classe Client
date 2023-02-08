@@ -1,0 +1,38 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Client {
+  public static void main(String[] args) throws IOException {
+    Socket socket = new Socket("localhost", 8888);
+    System.out.println("Connected to the server");
+    
+    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+    DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+    
+    Scanner scanner = new Scanner(System.in);
+    
+    while (true) {
+      System.out.println("Enter your choice (1 = rock, 2 = paper, 3 = scissor):");
+      int clientChoice = scanner.nextInt();
+      outputStream.writeInt(clientChoice);
+      
+      int serverChoice = inputStream.readInt();
+      System.out.println("Server choice: " + serverChoice);
+      
+      if (clientChoice == 1 && serverChoice == 2 || 
+          clientChoice == 2 && serverChoice == 3 || 
+          clientChoice == 3 && serverChoice == 1) {
+        System.out.println("Server wins!");
+      } else if (clientChoice == 1 && serverChoice == 3 || 
+                 clientChoice == 2 && serverChoice == 1 ||
+                 clientChoice == 3 && serverChoice == 2) {
+        System.out.println("Client wins!");  
+    }else {
+        System.out.println("Draw!");
+      }
+    }
+  }
+}
