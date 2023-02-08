@@ -1,0 +1,41 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Random;
+
+public class Server {
+  public static void main(String[] args) throws IOException {
+    ServerSocket serverSocket = new ServerSocket(8888);
+    System.out.println("Server started, waiting for a client...");
+    Socket socket = serverSocket.accept();
+    System.out.println("Client connected");
+    
+    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+    DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+    
+    while (true) {
+      int clientChoice = inputStream.readInt();
+      System.out.println("Client choice: " + clientChoice);
+      
+      Random random = new Random();
+      int serverChoice = random.nextInt(3) + 1;
+      System.out.println("Server choice: " + serverChoice);
+      
+      outputStream.writeInt(serverChoice);
+      
+      if (clientChoice == 1 && serverChoice == 2 || 
+          clientChoice == 2 && serverChoice == 3 || 
+          clientChoice == 3 && serverChoice == 1) {
+        System.out.println("Server wins!");
+      } else if (clientChoice == 1 && serverChoice == 3 || 
+                 clientChoice == 2 && serverChoice == 1 || 
+                 clientChoice == 3 && serverChoice == 2) {
+        System.out.println("Client wins!");
+      } else {
+        System.out.println("Draw!");
+      }
+    }
+  }
+}
